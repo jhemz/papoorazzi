@@ -36,25 +36,29 @@ function App() {
   return (
     <div className="app">
       {/* HEADER */}
-      <header className="header">
-        <div className="header-inner">
-          <div className="logo">
-            <div className="logo-icon">📸💩</div>
-            <div className="logo-text">
-              <span className="logo-title">PA-POO-razzi</span>
-              <span className="logo-tagline">Get closer to the stars than ever before.</span>
-            </div>
-          </div>
+<header className="header">
+  <div className="header-inner">
+    <div className="logo">
+      <img
+        src="./papoorazzi-logo.svg"
+        alt="Pa-POO-razzi logo"
+        className="logo-img"
+      />
+      <div className="logo-text">
+        <span className="logo-title-main">PA-POO-razzi</span>
+        <span className="logo-tagline">Get closer to the stars than ever before.</span>
+      </div>
+    </div>
 
-          <nav className="nav">
-            <a href="#drops">Latest Drops</a>
-            <a href="#alist">A-List Exclusives</a>
-            <a href="#how">Authentication</a>
-            <a href="#scoop">The Scoop</a>
-            <a href="#about">About</a>
-          </nav>
-        </div>
-      </header>
+    <nav className="nav">
+      <a href="#drops">Latest Drops</a>
+      <a href="#alist">A-List Exclusives</a>
+      <a href="#how">Authentication</a>
+      <a href="#scoop">The Scoop</a>
+      <a href="#about">About Pa-POO-razzi</a>
+    </nav>
+  </div>
+</header>
 
       <main>
         {/* HERO */}
