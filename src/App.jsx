@@ -2,9 +2,9 @@ import './App.css';
 import { useEffect, useMemo, useState } from 'react';
 
 import poo1 from './assets/poo1.png';
-import poo2 from './assets/poo2.png';
-import poo3 from './assets/poo3.png';
-import poo4 from './assets/poo4.png';
+import poo2 from './assets/poo1.png';
+import poo3 from './assets/poo1.png';
+import poo4 from './assets/poo1.png';
 import nugget from './assets/nuggest.png';
 
 const hotDrops = [
@@ -100,7 +100,7 @@ const hotDrops = [
   tag: 'ULTRA RARE',
   description: 'Chaotic sparkle energy with suspiciously excellent rhythm.',
   cta: 'View the scoop',
-    image: poo4,
+    image: poo1,
   details: {
     vibeScore: 9.9,
     location: 'A glittery backstage corridor (allegedly)',
@@ -119,7 +119,80 @@ const hotDrops = [
   additives: 'Artificial colourants, glitter-adjacent particulates',
   labComment: 'This specimen thinks it’s better than us.'
 }
-}
+},
+,
+  {
+    id: 9,
+    name: 'Kim K.',
+    code: 'Drop #404',
+    codeKey: '404',
+    tag: 'CURATED',
+    description: 'Perfectly staged… and yet. Here we are.',
+    cta: 'View the scoop',
+    image: nugget,
+    details: {
+      vibeScore: 8.9,
+      location: 'A valet area with too much lighting',
+      fibre: 'Strategically optimised.',
+      jar: 'Showbiz Solution™ (batch KK-04)',
+      notes: 'It’s giving “sponsored,” but the sponsor is bacteria.',
+    },
+    grossSpec: {
+      consistency: 'Suspiciously symmetrical. Like it had a glam team.',
+      bouquet: 'Sweet top note, then immediate courtroom energy.',
+      visualNotes: 'Smooth surfaces. Aggressively brand-safe.',
+      hazardRating: 'Medium (publicist nearby)',
+      collectorNote: 'Will attempt to monetize itself if left alone.'
+    }
+  },
+  {
+    id: 8,
+    name: 'The Rock',
+    code: 'Drop #999',
+    codeKey: '501', // (change if you don’t want collision with your Oscar Winner)
+    tag: 'HEAVYWEIGHT',
+    description: 'Industrial presence. The jar is under witness protection.',
+    cta: 'View the scoop',
+    image: nugget,
+    details: {
+      vibeScore: 9.5,
+      location: 'Gym-adjacent danger zone (allegedly)',
+      fibre: 'Terrifyingly committed.',
+      jar: 'Showbiz Solution™ (batch BRICK-01)',
+      notes: 'Feels like it could bench press you.',
+    },
+    grossSpec: {
+      consistency: 'Structural integrity: unethical.',
+      bouquet: 'Protein-shake hallucination with a scorched-earth finish.',
+      visualNotes: 'Looks like a meteorite with a gym membership.',
+      hazardRating: 'High (do not drop jar on foot)',
+      collectorNote: 'If it raises an eyebrow, evacuate.'
+    }
+  },,
+  {
+    id: 6,
+    name: 'Rihanna',
+    code: 'Drop #808',
+    codeKey: '808',
+    tag: 'ICON STATUS',
+    description: 'Luxury vibes. The jar looks like it costs £900.',
+    cta: 'View the scoop',
+    image: nugget,
+    details: {
+      vibeScore: 9.8,
+      location: 'VIP exit zone with security that blinked once',
+      fibre: 'Unbothered. Moisturised. In its lane.',
+      jar: 'Showbiz Solution™ (batch RIH-08)',
+      notes: 'Refuses to be perceived unless you’re worthy.',
+    },
+    grossSpec: {
+      consistency: 'Dense, expensive, and not here for your questions.',
+      bouquet: 'Perfume-adjacent… then immediately not.',
+      visualNotes: 'Looks like it’s wearing sunglasses.',
+      hazardRating: 'Medium (confidence-related)',
+      collectorNote: 'If you stare too long, you owe it money.'
+    }
+  },
 ];
 
 function App() {
