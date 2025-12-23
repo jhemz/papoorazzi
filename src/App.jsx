@@ -1,64 +1,210 @@
 import './App.css';
+import { useEffect, useMemo, useState } from 'react';
+
+import poo1 from './assets/poo1.png';
+import poo2 from './assets/poo2.png';
+import poo3 from './assets/poo3.png';
+import poo4 from './assets/poo4.png';
+import nugget from './assets/nuggest.png';
 
 const hotDrops = [
   {
     id: 1,
     name: 'Selena G.',
     code: 'Drop #221',
+    codeKey: '221',
     tag: 'LIMITED RELEASE',
     description: 'Notes of kale smoothie & L.A. brunch vibes.',
     cta: 'View the scoop',
+    image: poo1,
+    details: {
+      vibeScore: 9.4,
+      location: 'Brentwood juice bar alley',
+      fibre: 'Suspiciously high',
+      jar: 'Showbiz Solution™ (batch A12)',
+      notes: 'Tiny sunglasses imprint detected. Allegedly.',
+    },
+  fecalAnalysis: {
+  suspectedFoods: [
+    'Energy drinks (mixed, unholy)',
+    'Late-night takeaway of unknown origin',
+    'Something pink and fizzy',
+  ],
+  texture: 'Structurally confident. Unbothered by containment.',
+  aroma: 'Sweet chemical top-note with spiritual undertones.',
+  additives: 'Artificial colourants, glitter-adjacent particulates',
+  labComment: 'This specimen thinks it’s better than us.'
+}
   },
   {
     id: 2,
     name: 'Harry S.',
     code: 'Drop #782',
+    codeKey: '782',
     tag: 'BACK IN STOCK',
     description: 'Collected outside Soho House (we can’t say which one).',
     cta: 'Add to shrine',
+    image: poo2,
+    details: {
+      vibeScore: 8.1,
+      location: 'Private members’ pavement',
+      fibre: 'Cautiously adequate',
+      jar: 'Showbiz Solution™ (batch B07)',
+      notes: 'Smells faintly of oat flat white entitlement.',
+    },
+  fecalAnalysis: {
+  suspectedFoods: [
+    'Energy drinks (mixed, unholy)',
+    'Late-night takeaway of unknown origin',
+    'Something pink and fizzy',
+  ],
+  texture: 'Structurally confident. Unbothered by containment.',
+  aroma: 'Sweet chemical top-note with spiritual undertones.',
+  additives: 'Artificial colourants, glitter-adjacent particulates',
+  labComment: 'This specimen thinks it’s better than us.'
+}
   },
   {
     id: 3,
     name: 'Mystery Oscar Winner',
     code: 'Drop #999',
+    codeKey: '999',
     tag: 'BLIND DROP',
     description: 'High-fibre, high-drama, identity redacted.',
     cta: 'Reveal… maybe',
+    image: poo3,
+    details: {
+      vibeScore: 10.0,
+      location: 'Awards season danger-zone',
+      fibre: 'Weaponised',
+      jar: 'Showbiz Solution™ (batch X99)',
+      notes: 'Identity redacted for everyone’s safety.',
+    },
+  fecalAnalysis: {
+  suspectedFoods: [
+    'Energy drinks (mixed, unholy)',
+    'Late-night takeaway of unknown origin',
+    'Something pink and fizzy',
+  ],
+  texture: 'Structurally confident. Unbothered by containment.',
+  aroma: 'Sweet chemical top-note with spiritual undertones.',
+  additives: 'Artificial colourants, glitter-adjacent particulates',
+  labComment: 'This specimen thinks it’s better than us.'
+}
   },
+  {
+  id: 4,
+  name: 'Doja Cat',
+  code: 'Drop #420',
+  codeKey: '420',
+  tag: 'ULTRA RARE',
+  description: 'Chaotic sparkle energy with suspiciously excellent rhythm.',
+  cta: 'View the scoop',
+    image: poo4,
+  details: {
+    vibeScore: 9.9,
+    location: 'A glittery backstage corridor (allegedly)',
+    fibre: 'Unknowable. Powerful.',
+    jar: 'Showbiz Solution™ (batch DC-01)',
+    notes: 'Warm. Assertive. Visually confident. Refuses to sit politely in the jar. Emits a faint but unmistakable hint of energy drink, incense, and something that should not be warm this long.'
+  },
+  fecalAnalysis: {
+  suspectedFoods: [
+    'Energy drinks (mixed, unholy)',
+    'Late-night takeaway of unknown origin',
+    'Something pink and fizzy',
+  ],
+  texture: 'Structurally confident. Unbothered by containment.',
+  aroma: 'Sweet chemical top-note with spiritual undertones.',
+  additives: 'Artificial colourants, glitter-adjacent particulates',
+  labComment: 'This specimen thinks it’s better than us.'
+}
+}
 ];
 
 function App() {
+  const [activeDrop, setActiveDrop] = useState(null);
+
+  const dropsByKey = useMemo(() => {
+    const map = new Map();
+    hotDrops.forEach((d) => map.set(String(d.codeKey), d));
+    return map;
+  }, []);
+
+  const closeModal = () => {
+    setActiveDrop(null);
+
+    // Clear the hash (optional). Keeps URL clean after closing.
+    if (window.location.hash.startsWith('#/')) {
+      history.replaceState(null, '', window.location.pathname + window.location.search + '#');
+    }
+  };
+
+  const readHashAndOpen = () => {
+    // Accepts "#/221" or "#221"
+    // Also survives scanners that add junk like "#/221?utm=whatever"
+    const raw = window.location.hash || '';
+    const key = raw
+      .replace(/^#\/?/, '')       // "#/221" -> "221"
+      .split(/[?&/]/)[0]          // "221?x=y" -> "221"
+      .trim();
+
+    if (!key) {
+      setActiveDrop(null);
+      return;
+    }
+
+    const found = dropsByKey.get(key);
+    if (found) setActiveDrop(found);
+    else setActiveDrop(null); // unknown code -> no modal
+  };
+
+  useEffect(() => {
+    readHashAndOpen(); // on initial load
+    window.addEventListener('hashchange', readHashAndOpen);
+    return () => window.removeEventListener('hashchange', readHashAndOpen);
+  }, [dropsByKey]);
+
   const scrollToDrops = () => {
     const el = document.getElementById('drops');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
+const makeSerial = (drop) => {
+  // deterministic-ish “serial” based on codeKey + id
+  const base = `${drop.codeKey}-${drop.id}`;
+  const hash = [...base].reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) >>> 0, 7);
+  return `PPR-${drop.codeKey}-${String(hash).slice(-6).padStart(6, '0')}`;
+};
+
+const formatHashLink = (drop) => `${window.location.origin}${window.location.pathname}#/${drop.codeKey}`;
+
   return (
     <div className="app">
       {/* HEADER */}
-<header className="header">
-  <div className="header-inner">
-    <div className="logo">
-      <img
-        src="./papoorazzi-logo.svg"
-        alt="Pa-POO-razzi logo"
-        className="logo-img"
-      />
-      <div className="logo-text">
-        <span className="logo-title-main">PA-POO-razzi</span>
-        <span className="logo-tagline">Get closer to the stars than ever before.</span>
-      </div>
-    </div>
+      <header className="header">
+        <div className="header-inner">
+          <div className="logo">
+            {/* <img
+              src={`${process.env.PUBLIC_URL}/papoorazzi-logo.svg`}
+              alt="Pa-POO-razzi logo"
+              className="logo-img"
+            /> */}
+            <div className="logo-text">
+              <span className="logo-title-main">PA-POO-razzi</span>
+              <span className="logo-tagline">Get closer to the stars than ever before.</span>
+            </div>
+          </div>
 
-    <nav className="nav">
-      <a href="#drops">Latest Drops</a>
-      <a href="#alist">A-List Exclusives</a>
-      <a href="#how">Authentication</a>
-      <a href="#scoop">The Scoop</a>
-      <a href="#about">About Pa-POO-razzi</a>
-    </nav>
-  </div>
-</header>
+          <nav className="nav">
+            <a href="#drops">Latest Drops</a>
+            <a href="#alist">A-List Exclusives</a>
+            <a href="#how">Authentication</a>
+            <a href="#scoop">The Scoop</a>
+            <a href="#about">About Pa-POO-razzi</a>
+          </nav>
+        </div>
+      </header>
 
       <main>
         {/* HERO */}
@@ -82,7 +228,13 @@ function App() {
             <div className="hero-card">
               <div className="jar-illustration">
                 <div className="jar-glass">
-                  <div className="jar-contents">💩</div>
+                <div className="jar-contents">
+  <img
+    src={nugget}
+    alt="Preserved nugget"
+    className="jar-nugget-img"
+  />
+</div>
                 </div>
                 <div className="jar-label">LIMITED DROP</div>
               </div>
@@ -117,14 +269,21 @@ function App() {
 
                   <div className="drop-jar">
                     <div className="drop-jar-glass">
-                      <span className="drop-jar-emoji">💩</span>
+                     <img
+  src={drop.image}
+  alt={`${drop.name} drop`}
+  className="drop-jar-img"
+/>
                     </div>
                     <span className="drop-jar-star">★</span>
                   </div>
 
                   <p className="drop-text">{drop.description}</p>
 
-                  <button className="drop-cta">{drop.cta}</button>
+                  {/* QR-only: no onClick, just a disabled “button-looking” thing */}
+                  <button className="drop-cta" disabled>
+                    {drop.cta}
+                  </button>
                 </article>
               ))}
             </div>
@@ -201,12 +360,189 @@ function App() {
         </section>
       </main>
 
+      {/* MODAL (opens ONLY when URL hash contains a valid codeKey) */}
+     {activeDrop && (
+  <div className="modal-backdrop" onClick={closeModal} role="presentation">
+    <div
+      className="modal modal-product"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${activeDrop.name} details`}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button className="modal-close" onClick={closeModal} aria-label="Close">
+        ✕
+      </button>
+
+      {/* Top banner */}
+      <div className="modal-top">
+        <div className="modal-top-left">
+         <div className="modal-kicker">CONGRATULATIONS</div>
+
+<div className="modal-specimen-callout">
+  Drop contents: <span className="specimen-emphasis">one preserved faecal nugget</span>
+</div>
+
+<h2 className="modal-title">
+  You are now the proud owner of <span className="modal-title-accent">{activeDrop.code}</span>
+</h2>
+          <p className="modal-blurb">
+            Please keep your excitement to a minimum. The specimen can sense confidence.
+          </p>
+        </div>
+
+        <div className="modal-top-right">
+          <span className="modal-pill">{activeDrop.tag}</span>
+          <span className="modal-pill subtle">Authenticated by vibes</span>
+        </div>
+      </div>
+
+      {/* Main layout */}
+      <div className="modal-body modal-body-product">
+        <div className="modal-media">
+          <div className="drop-jar-glass modal-jar-glass">
+            <img
+              src={activeDrop.image}
+              alt={`${activeDrop.name} drop`}
+              className="drop-jar-img drop-jar-img--modal"
+            />
+          </div>
+
+          <div className="modal-certificate">
+            <div className="cert-title">Certificate of Extremely Questionable Ownership</div>
+            <div className="cert-row">
+              <span className="cert-label">Specimen</span>
+              <span className="cert-value">{activeDrop.name}</span>
+            </div>
+            <div className="cert-row">
+              <span className="cert-label">Serial</span>
+              <span className="cert-value mono">{makeSerial(activeDrop)}</span>
+            </div>
+            <div className="cert-row">
+              <span className="cert-label">Containment</span>
+              <span className="cert-value">Level IV Jar • “Do Not Agitate”</span>
+            </div>
+            <div className="cert-row">
+              <span className="cert-label">Status</span>
+              <span className="cert-value">Sealed • Glowering • Unapologetic</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="modal-info">
+          <div className="modal-subhead">
+            <div>
+            <div className="modal-name modal-name-hero">{activeDrop.name}</div>
+              <div className="modal-code">{activeDrop.code}</div>
+            </div>
+            <div className="modal-rating">
+              <div className="rating-label">Vibe Score</div>
+              <div className="rating-value">{activeDrop.details?.vibeScore ?? '—'}</div>
+            </div>
+          </div>
+
+          <p className="modal-desc">{activeDrop.description}</p>
+
+          <div className="info-grid">
+            <div className="info-card">
+              <div className="info-title">Collection Zone</div>
+              <div className="info-text">{activeDrop.details?.location ?? 'Unknown'}</div>
+            </div>
+
+            <div className="info-card">
+              <div className="info-title">Fibre Profile</div>
+              <div className="info-text">{activeDrop.details?.fibre ?? 'Unclear'}</div>
+            </div>
+
+            <div className="info-card">
+              <div className="info-title">Jar & Suspension</div>
+              <div className="info-text">{activeDrop.details?.jar ?? 'Showbiz Solution™'}</div>
+            </div>
+
+            <div className="info-card danger">
+              <div className="info-title">Lab Notes</div>
+              <div className="info-text">
+                {activeDrop.details?.notes ??
+                  'Arrived with ambition. The jar is doing its best.'}
+              </div>
+            </div>
+          </div>
+
+{activeDrop.fecalAnalysis && (
+  <div className="analysis-box">
+    <div className="analysis-title">Fecal Analysis Report</div>
+
+    <div className="analysis-grid">
+      <div className="analysis-item">
+        <div className="analysis-label">Suspected Diet</div>
+        <ul className="analysis-list">
+          {activeDrop.fecalAnalysis.suspectedFoods.map((food, i) => (
+            <li key={i}>{food}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="analysis-item">
+        <div className="analysis-label">Texture Profile</div>
+        <div className="analysis-text">{activeDrop.fecalAnalysis.texture}</div>
+      </div>
+
+      <div className="analysis-item">
+        <div className="analysis-label">Aroma Notes</div>
+        <div className="analysis-text">{activeDrop.fecalAnalysis.aroma}</div>
+      </div>
+
+      <div className="analysis-item">
+        <div className="analysis-label">Detected Additives</div>
+        <div className="analysis-text">{activeDrop.fecalAnalysis.additives}</div>
+      </div>
+
+      <div className="analysis-item full danger">
+        <div className="analysis-label">Lab Commentary</div>
+        <div className="analysis-text">
+          {activeDrop.fecalAnalysis.labComment}
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+          <div className="gross-box">
+            <div className="gross-title">Handling & Care Instructions</div>
+            <ul className="gross-list">
+              <li><strong>DO NOT</strong> open the lid “just for a sniff”. That’s how legends end.</li>
+              <li>Store upright, away from sunlight, pets, and anyone you respect.</li>
+              <li>If the liquid looks like it’s staring back: rotate the jar 90° and whisper “containment” firmly.</li>
+              <li>In the event of slosh: place jar in a bowl, walk away, reassess your life.</li>
+            </ul>
+          </div>
+
+          <div className="modal-actions">
+            <button
+              className="drop-cta"
+              onClick={() => navigator.clipboard?.writeText(formatHashLink(activeDrop))}
+            >
+              Copy QR Link
+            </button>
+
+            <button className="ghost-btn" onClick={closeModal}>
+              Close & Pretend This Never Happened
+            </button>
+          </div>
+
+          <p className="modal-footnote">
+            By viewing this specimen you agree to the Pa-POO-razzi code: no touching, no tasting, no questions.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
       {/* FOOTER */}
       <footer className="footer">
         <div className="footer-inner">
-          <p>
-            © {new Date().getFullYear()} Pa-POO-razzi Laboratories. All rights reserved, none of this was a good idea.
-          </p>
+          <p>© {new Date().getFullYear()} Pa-POO-razzi Laboratories. All rights reserved, none of this was a good idea.</p>
           <p className="footer-small">
             Pa-POO-razzi is committed to ethical poo-sourcing from publicly accessible celebrity zones. No trespassing,
             no drones in bathrooms, just old-fashioned poor life choices.
